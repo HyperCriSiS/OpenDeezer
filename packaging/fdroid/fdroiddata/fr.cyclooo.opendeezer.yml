@@ -38,7 +38,7 @@ Builds:
     rm:
       - gui/macos/Clib/libdeezercore-amd64.a
       - gui/macos/Clib/libdeezercore-arm64.a
-    prebuild: sdkmanager 'platforms;android-24' 'platforms;android-37'
+    prebuild: sdkmanager 'platforms;android-24' 'platforms;android-37.0'
       'build-tools;36.0.0'
     build:
       - pushd $$go$$/src
@@ -50,7 +50,7 @@ Builds:
       - cd ../../..
       - scripts/build-mobile-tools.sh "$GOPATH/bin"
       - gomobile bind -trimpath -target=android -androidapi 24 -bootclasspath
-        "$ANDROID_HOME/platforms/android-37/android.jar" -ldflags="-s -w
+        "$ANDROID_HOME/platforms/android-37.0/android.jar" -ldflags="-s -w
         -buildid=" -o gui/android/app/libs/odmobile.aar ./mobile
     ndk: r28c
     gradleprops:
@@ -72,7 +72,7 @@ Builds:
     rm:
       - gui/macos/Clib/libdeezercore-amd64.a
       - gui/macos/Clib/libdeezercore-arm64.a
-    prebuild: sdkmanager 'platforms;android-24' 'platforms;android-37'
+    prebuild: sdkmanager 'platforms;android-24' 'platforms;android-37.0'
       'build-tools;36.0.0'
     build:
       - pushd $$go$$/src
@@ -84,7 +84,7 @@ Builds:
       - cd ../../..
       - scripts/build-mobile-tools.sh "$GOPATH/bin"
       - gomobile bind -trimpath -target=android -androidapi 24 -bootclasspath
-        "$ANDROID_HOME/platforms/android-37/android.jar" -ldflags="-s -w
+        "$ANDROID_HOME/platforms/android-37.0/android.jar" -ldflags="-s -w
         -buildid=" -o gui/android/app/libs/odmobile.aar ./mobile
     ndk: r28c
     gradleprops:
@@ -106,7 +106,7 @@ Builds:
     rm:
       - gui/macos/Clib/libdeezercore-amd64.a
       - gui/macos/Clib/libdeezercore-arm64.a
-    prebuild: sdkmanager 'platforms;android-24' 'platforms;android-37'
+    prebuild: sdkmanager 'platforms;android-24' 'platforms;android-37.0'
       'build-tools;36.0.0'
     build:
       - pushd $$go$$/src
@@ -118,7 +118,7 @@ Builds:
       - cd ../../..
       - scripts/build-mobile-tools.sh "$GOPATH/bin"
       - gomobile bind -trimpath -target=android -androidapi 24 -bootclasspath
-        "$ANDROID_HOME/platforms/android-37/android.jar" -ldflags="-s -w
+        "$ANDROID_HOME/platforms/android-37.0/android.jar" -ldflags="-s -w
         -buildid=" -o gui/android/app/libs/odmobile.aar ./mobile
     ndk: r28c
     gradleprops:
@@ -140,7 +140,7 @@ Builds:
     rm:
       - gui/macos/Clib/libdeezercore-amd64.a
       - gui/macos/Clib/libdeezercore-arm64.a
-    prebuild: sdkmanager 'platforms;android-24' 'platforms;android-37'
+    prebuild: sdkmanager 'platforms;android-24' 'platforms;android-37.0'
       'build-tools;36.0.0'
     build:
       - pushd $$go$$/src
@@ -152,7 +152,7 @@ Builds:
       - cd ../../..
       - scripts/build-mobile-tools.sh "$GOPATH/bin"
       - gomobile bind -trimpath -target=android -androidapi 24 -bootclasspath
-        "$ANDROID_HOME/platforms/android-37/android.jar" -ldflags="-s -w
+        "$ANDROID_HOME/platforms/android-37.0/android.jar" -ldflags="-s -w
         -buildid=" -o gui/android/app/libs/odmobile.aar ./mobile
     ndk: r28c
     gradleprops:
