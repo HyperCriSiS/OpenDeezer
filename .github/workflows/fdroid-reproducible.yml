@@ -154,7 +154,7 @@ jobs:
           sdkmanager \
             "ndk;$ANDROID_NDK_VERSION" \
             "platforms;android-24" \
-            "platforms;android-37" \
+            "platforms;android-37.0" \
             "build-tools;$ANDROID_BUILD_TOOLS"
 
       - name: Stage source at the F-Droid build path
@@ -185,7 +185,7 @@ jobs:
           test "$(go list -m -f '{{.Dir}}')" = "$FIXED_ROOT"
           scripts/build-mobile-tools.sh "$GOPATH/bin"
           gomobile bind -trimpath -target=android -androidapi 24 \
-            -bootclasspath "$ANDROID_HOME/platforms/android-37/android.jar" \
+            -bootclasspath "$ANDROID_HOME/platforms/android-37.0/android.jar" \
             -ldflags="-s -w -buildid=" \
             -o gui/android/app/libs/odmobile.aar ./mobile
 
