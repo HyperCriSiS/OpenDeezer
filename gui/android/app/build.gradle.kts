@@ -2,7 +2,6 @@ import com.android.build.api.variant.FilterConfiguration
 
 plugins {
     id("com.android.application")
-    id("org.jetbrains.kotlin.android")
     id("org.jetbrains.kotlin.plugin.compose")
 }
 
@@ -35,12 +34,12 @@ val abiSplitsEnabled =
 
 android {
     namespace = "fr.cyclooo.opendeezer"
-    compileSdk = 34
+    compileSdk = 37
 
     defaultConfig {
         applicationId = "fr.cyclooo.opendeezer"
         minSdk = 24
-        targetSdk = 34
+        targetSdk = 36
         versionCode = 26
         versionName = "3.1.4"
         buildConfigField("boolean", "ENABLE_UPSTREAM_UPDATES", upstreamUpdatesEnabled.toString())
@@ -122,10 +121,6 @@ android {
         targetCompatibility = JavaVersion.VERSION_17
     }
 
-    kotlinOptions {
-        jvmTarget = "17"
-    }
-
     buildFeatures {
         buildConfig = true
         compose = true
@@ -162,17 +157,17 @@ dependencies {
     // OpenDeezer Go engine, bound by gomobile (built by CI into libs/odmobile.aar).
     implementation(files("libs/odmobile.aar"))
 
-    val composeBom = platform("androidx.compose:compose-bom:2024.09.03")
+    val composeBom = platform("androidx.compose:compose-bom:2026.08.00")
     implementation(composeBom)
     androidTestImplementation(composeBom)
 
-    implementation("androidx.core:core-ktx:1.13.1")
+    implementation("androidx.core:core-ktx:1.19.0")
     // MediaSessionCompat + MediaStyle notification for the playback service.
-    implementation("androidx.media:media:1.7.0")
-    implementation("androidx.activity:activity-compose:1.9.2")
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.8.6")
-    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.8.6")
-    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.6")
+    implementation("androidx.media:media:1.8.0")
+    implementation("androidx.activity:activity-compose:1.13.0")
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.11.0")
+    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.11.0")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.11.0")
 
     implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.ui:ui-graphics")
@@ -181,12 +176,13 @@ dependencies {
     implementation("androidx.compose.material3:material3")
     implementation("androidx.compose.material:material-icons-extended")
 
-    implementation("androidx.navigation:navigation-compose:2.8.0")
+    implementation("androidx.navigation:navigation-compose:2.9.8")
 
     // Foldable posture (FoldingFeature: tabletop/book) for the split layouts.
     implementation("androidx.window:window:1.5.1")
 
-    implementation("io.coil-kt:coil-compose:2.7.0")
+    implementation("io.coil-kt.coil3:coil-compose:3.5.0")
+    implementation("io.coil-kt.coil3:coil-network-okhttp:3.5.0")
 
     debugImplementation("androidx.compose.ui:ui-tooling")
 }

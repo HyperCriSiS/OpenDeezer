@@ -43,7 +43,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import coil.compose.SubcomposeAsyncImage
+import coil3.compose.SubcomposeAsyncImage
 import fr.cyclooo.opendeezer.R
 import fr.cyclooo.opendeezer.engine.ConnectDevice
 import fr.cyclooo.opendeezer.engine.Track

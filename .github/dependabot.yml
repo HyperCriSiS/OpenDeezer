@@ -1,4 +1,3 @@
-
 version: 2
 updates:
   - package-ecosystem: gomod
@@ -10,7 +9,20 @@ updates:
       go-dependencies:
         patterns: ["*"]
 
+  - package-ecosystem: gradle
+    directory: "/gui/android"
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 5
+    groups:
+      android-dependencies:
+        patterns: ["*"]
+
   - package-ecosystem: github-actions
     directory: "/"
     schedule:
       interval: weekly
+    open-pull-requests-limit: 3
+    groups:
+      github-actions:
+        patterns: ["*"]
