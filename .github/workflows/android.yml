@@ -48,8 +48,8 @@ jobs:
           # Emulator update (~300 MB) we never use and whose download flakes.
           packages: platform-tools
 
-      - name: Install NDK
-        run: sdkmanager "ndk;28.2.13676358" "platforms;android-37" "build-tools;36.0.0"
+      - name: Install NDK and Android SDK
+        run: sdkmanager "ndk;28.2.13676358" "platforms;android-37.0" "build-tools;36.0.0"
 
       - name: Build odmobile.aar (gomobile)
         env:
