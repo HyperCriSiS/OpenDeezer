@@ -10,7 +10,7 @@ jobs:
   bootstrap:
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           ref: dev
           fetch-depth: 0
@@ -34,7 +34,7 @@ jobs:
             golang.org/x/sys@v0.47.0
           go mod tidy
 
-      - name: Update Android and CI dependencies
+      - name: Update Android and non-workflow dependencies
         shell: python
         run: |
           from pathlib import Path
@@ -46,7 +46,6 @@ jobs:
                   raise SystemExit(f"Expected text not found in {path}: {old!r}")
               p.write_text(s.replace(old, new))
 
-          # AGP 9.3.1 + built-in Kotlin/KGP 2.4.10 + Compose compiler 2.4.10.
           Path("gui/android/build.gradle.kts").write_text('''// Top-level build file. Android Gradle Plugin 9 uses built-in Kotlin.\n// Pin KGP explicitly so the built-in compiler and Compose compiler stay in lockstep.\nbuildscript {\n    dependencies {\n        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:2.4.10")\n    }\n}\n\nplugins {\n    id("com.android.application") version "9.3.1" apply false\n    id("org.jetbrains.kotlin.plugin.compose") version "2.4.10" apply false\n}\n''')
 
           p = Path("gui/android/app/build.gradle.kts")
@@ -83,45 +82,6 @@ jobs:
               "gradle-9.5.0-bin.zip",
           )
 
-          # Workflow action majors + Go security release.
-          for path in [
-              ".github/workflows/ci.yml",
-              ".github/workflows/android.yml",
-              ".github/workflows/fdroid-reproducible.yml",
-              ".github/workflows/release.yml",
-          ]:
-              p = Path(path)
-              s = p.read_text()
-              s = s.replace("actions/setup-go@v6", "actions/setup-go@v7")
-              s = s.replace('go-version: "1.25.12"', 'go-version: "1.25.13"')
-              s = s.replace("actions/upload-artifact@v4", "actions/upload-artifact@v7")
-              s = s.replace("actions/download-artifact@v4", "actions/download-artifact@v8")
-              s = s.replace("softprops/action-gh-release@v2", "softprops/action-gh-release@v3")
-              s = s.replace("peter-evans/create-pull-request@v6", "peter-evans/create-pull-request@v8")
-              p.write_text(s)
-
-          # Android build/release toolchain. AGP 9.3 supports API 37 and defaults to NDK r28c.
-          for path in [".github/workflows/android.yml", ".github/workflows/release.yml"]:
-              p = Path(path)
-              s = p.read_text()
-              s = s.replace(
-                  'sdkmanager "ndk;26.3.11579264" "platforms;android-34" "build-tools;34.0.0"',
-                  'sdkmanager "ndk;28.2.13676358" "platforms;android-37" "build-tools;36.0.0"',
-              )
-              s = s.replace("/ndk/26.3.11579264", "/ndk/28.2.13676358")
-              s = s.replace("build-tools/34.0.0/apksigner", "build-tools/36.0.0/apksigner")
-              s = s.replace("build-tools/34.0.0/aapt", "build-tools/36.0.0/aapt")
-              p.write_text(s)
-
-          # Reproducible F-Droid workflow and bundled recipe must use the same pins.
-          p = Path(".github/workflows/fdroid-reproducible.yml")
-          s = p.read_text()
-          s = s.replace("ANDROID_BUILD_TOOLS: 34.0.0", "ANDROID_BUILD_TOOLS: 36.0.0")
-          s = s.replace("ANDROID_NDK_VERSION: 26.3.11579264", "ANDROID_NDK_VERSION: 28.2.13676358")
-          s = s.replace('"platforms;android-34"', '"platforms;android-37"')
-          s = s.replace("platforms/android-34/android.jar", "platforms/android-37/android.jar")
-          p.write_text(s)
-
           p = Path("packaging/fdroid/fdroiddata/fr.cyclooo.opendeezer.yml")
           s = p.read_text()
           s = s.replace("go@go1.25.12", "go@go1.25.13")
@@ -131,7 +91,6 @@ jobs:
           s = s.replace("ndk: r26d", "ndk: r28c")
           p.write_text(s)
 
-          # Keep future updates grouped and add Android/Gradle dependency monitoring.
           Path(".github/dependabot.yml").write_text('''version: 2\nupdates:\n  - package-ecosystem: gomod\n    directory: "/"\n    schedule:\n      interval: weekly\n    open-pull-requests-limit: 5\n    groups:\n      go-dependencies:\n        patterns: ["*"]\n\n  - package-ecosystem: gradle\n    directory: "/gui/android"\n    schedule:\n      interval: weekly\n    open-pull-requests-limit: 5\n    groups:\n      android-dependencies:\n        patterns: ["*"]\n\n  - package-ecosystem: github-actions\n    directory: "/"\n    schedule:\n      interval: weekly\n    open-pull-requests-limit: 3\n    groups:\n      github-actions:\n        patterns: ["*"]\n''')
 
       - name: Validate bootstrap diff
@@ -139,7 +98,7 @@ jobs:
         run: |
           set -euo pipefail
           git diff --check
-          ! git grep -nE 'go 1\.25\.12|go-version: "1\.25\.12"|gradle-8\.7-bin|compileSdk = 34|targetSdk = 34|compose-bom:2024\.09\.03|io\.coil-kt:coil-compose:2\.7\.0' -- ':!CHANGELOG.md'
+          ! git grep -nE 'go 1\.25\.12|gradle-8\.7-bin|compileSdk = 34|targetSdk = 34|compose-bom:2024\.09\.03|io\.coil-kt:coil-compose:2\.7\.0' -- go.mod gui/android packaging/fdroid
           grep -q 'go 1.25.13' go.mod
           grep -q 'com.android.application") version "9.3.1"' gui/android/build.gradle.kts
           grep -q 'compose-bom:2026.08.00' gui/android/app/build.gradle.kts
@@ -148,7 +107,6 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          rm .github/workflows/bootstrap-openfreezer.yml
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add -A
