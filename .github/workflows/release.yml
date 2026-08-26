@@ -21,7 +21,7 @@ jobs:
       windows: ${{ steps.c.outputs.windows }}
       linux: ${{ steps.c.outputs.linux }}
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - id: c
         run: |
           for d in macos gnome kde windows linux; do
@@ -50,10 +50,10 @@ jobs:
           - { goos: darwin,  goarch: amd64, runner: macos-latest,     cgo: 1 }
           - { goos: windows, goarch: amd64, runner: windows-latest,   cgo: 1 }
     steps:
-      - uses: actions/checkout@v6
-      - uses: actions/setup-go@v6
+      - uses: actions/checkout@v7
+      - uses: actions/setup-go@v7
         with:
-          go-version: "1.25.12"
+          go-version: "1.25.13"
       - name: Install ALSA (linux)
         if: matrix.goos == 'linux'
         run: sudo apt-get update && sudo apt-get install -y libasound2-dev
@@ -79,13 +79,13 @@ jobs:
           echo "ARTIFACT=$OUT" >> "$GITHUB_ENV"
       - name: Upload to release
         if: startsWith(github.ref, 'refs/tags/')
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           files: ${{ env.ARTIFACT }}
           fail_on_unmatched_files: true
       - name: Attest build provenance (tui binary)
         if: startsWith(github.ref, 'refs/tags/')
-        uses: actions/attest-build-provenance@v1
+        uses: actions/attest-build-provenance@v4
         with:
           subject-path: '${{ env.ARTIFACT }}'
 
@@ -107,14 +107,14 @@ jobs:
     env:
       SIGN: ${{ secrets.MACOS_CERTIFICATE_P12 != '' && secrets.APPLE_API_KEY_P8 != '' }}
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - name: Select Xcode 26
         uses: maxim-lobanov/setup-xcode@v1
         with:
           xcode-version: "26.0"
-      - uses: actions/setup-go@v6
+      - uses: actions/setup-go@v7
         with:
-          go-version: "1.25.12"
+          go-version: "1.25.13"
       - name: Build universal app bundle (arm64 + x86_64)
         run: cd gui/macos && make app
 
@@ -180,7 +180,7 @@ jobs:
 
       - name: Upload to release
         if: startsWith(github.ref, 'refs/tags/')
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           files: OpenDeezer-macos-universal.zip
 
@@ -196,10 +196,10 @@ jobs:
           - { runner: ubuntu-24.04-arm, arch: aarch64 }
     runs-on: ${{ matrix.runner }}
     steps:
-      - uses: actions/checkout@v6
-      - uses: actions/setup-go@v6
+      - uses: actions/checkout@v7
+      - uses: actions/setup-go@v7
         with:
-          go-version: "1.25.12"
+          go-version: "1.25.13"
       - name: Install deps
         run: sudo apt-get update && sudo apt-get install -y libgtk-4-dev libadwaita-1-dev libjson-glib-dev libwebkitgtk-6.0-dev libsoup-3.0-dev libasound2-dev meson ninja-build gettext
       - name: Build
@@ -208,7 +208,7 @@ jobs:
         run: cp gui/gnome/opendeezer-gnome OpenDeezer-gnome-${{ matrix.arch }}
       - name: Upload to release
         if: startsWith(github.ref, 'refs/tags/')
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           files: OpenDeezer-gnome-${{ matrix.arch }}
 
@@ -224,10 +224,10 @@ jobs:
           - { runner: ubuntu-24.04-arm, arch: aarch64 }
     runs-on: ${{ matrix.runner }}
     steps:
-      - uses: actions/checkout@v6
-      - uses: actions/setup-go@v6
+      - uses: actions/checkout@v7
+      - uses: actions/setup-go@v7
         with:
-          go-version: "1.25.12"
+          go-version: "1.25.13"
       - name: Install deps
         run: sudo apt-get update && sudo apt-get install -y qt6-base-dev qt6-webengine-dev qt6-l10n-tools qt6-tools-dev cmake libasound2-dev
       - name: Build
@@ -236,7 +236,7 @@ jobs:
         run: cp gui/kde/opendeezer-kde OpenDeezer-kde-${{ matrix.arch }}
       - name: Upload to release
         if: startsWith(github.ref, 'refs/tags/')
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           files: OpenDeezer-kde-${{ matrix.arch }}
 
@@ -252,10 +252,10 @@ jobs:
           - { runner: ubuntu-24.04-arm, arch: aarch64 }
     runs-on: ${{ matrix.runner }}
     steps:
-      - uses: actions/checkout@v6
-      - uses: actions/setup-go@v6
+      - uses: actions/checkout@v7
+      - uses: actions/setup-go@v7
         with:
-          go-version: "1.25.12"
+          go-version: "1.25.13"
       - name: Install deps
         run: sudo apt-get update && sudo apt-get install -y libgtk-4-dev libadwaita-1-dev libjson-glib-dev libwebkitgtk-6.0-dev libsoup-3.0-dev qt6-base-dev qt6-webengine-dev qt6-l10n-tools qt6-tools-dev libasound2-dev meson ninja-build cmake gettext
       - name: Build unified bundle
@@ -264,7 +264,7 @@ jobs:
         run: tar -C gui/linux/dist -czf OpenDeezer-linux-${{ matrix.arch }}.tar.gz .
       - name: Upload to release
         if: startsWith(github.ref, 'refs/tags/')
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           files: OpenDeezer-linux-${{ matrix.arch }}.tar.gz
 
@@ -280,11 +280,11 @@ jobs:
     env:
       SIGN: ${{ secrets.AZURE_CLIENT_ID != '' && secrets.TRUSTED_SIGNING_ACCOUNT_NAME != '' }}
     steps:
-      - uses: actions/checkout@v6
-      - uses: actions/setup-go@v6
+      - uses: actions/checkout@v7
+      - uses: actions/setup-go@v7
         with:
-          go-version: "1.25.12"
-      - uses: actions/setup-dotnet@v5
+          go-version: "1.25.13"
+      - uses: actions/setup-dotnet@v6
         with:
           dotnet-version: "8.0.x"
       - name: Build (Go c-shared DLL + dotnet publish)
@@ -297,7 +297,7 @@ jobs:
         # libdeezercore.dll) under bin\...\win-x64\publish. Resolve that dir robustly.
         run: |
           $exe = Get-ChildItem -Path gui/windows/bin -Filter OpenDeezer.exe -Recurse -File |
-                 Where-Object { $_.FullName -match '\\publish\\' } | Select-Object -First 1
+                 Where-Object { $_.FullName -match '\publish\' } | Select-Object -First 1
           if (-not $exe) { throw 'publish dir not found' }
           "dir=$($exe.Directory.FullName)" >> $env:GITHUB_OUTPUT
       - name: Sign OpenDeezer.exe (Azure Trusted Signing)
@@ -305,7 +305,7 @@ jobs:
         # Signs only the launcher exe (SmartScreen assesses the exe the user runs;
         # the WinAppSDK DLLs are already Microsoft-signed and libdeezercore.dll is
         # loaded by the signed exe, so re-signing every DLL is unnecessary).
-        uses: azure/trusted-signing-action@v0
+        uses: azure/trusted-signing-action@v2
         with:
           azure-tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           azure-client-id: ${{ secrets.AZURE_CLIENT_ID }}
@@ -324,7 +324,7 @@ jobs:
         run: Compress-Archive -Path (Join-Path '${{ steps.pub.outputs.dir }}' '*') -DestinationPath OpenDeezer-windows-x64.zip
       - name: Upload to release
         if: startsWith(github.ref, 'refs/tags/')
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           files: OpenDeezer-windows-x64.zip
 
@@ -333,7 +333,7 @@ jobs:
     if: startsWith(github.ref, 'refs/tags/')
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - name: Validate Android release version
         run: |
           if ! [[ "$GITHUB_REF_NAME" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
@@ -353,9 +353,9 @@ jobs:
             exit 1
           fi
           echo "ANDROID_BASE_VERSION_CODE=$BASE_VERSION_CODE" >> "$GITHUB_ENV"
-      - uses: actions/setup-go@v6
+      - uses: actions/setup-go@v7
         with:
-          go-version: "1.25.12"
+          go-version: "1.25.13"
       - uses: actions/setup-java@v5
         with:
           distribution: temurin
@@ -366,10 +366,10 @@ jobs:
           # use and whose download flakes; platform-tools is all we need.
           packages: platform-tools
       - name: Install NDK
-        run: sdkmanager "ndk;26.3.11579264" "platforms;android-34" "build-tools;34.0.0"
+        run: sdkmanager "ndk;28.2.13676358" "platforms;android-37.0" "build-tools;36.0.0"
       - name: Build odmobile.aar (gomobile)
         env:
-          ANDROID_NDK_HOME: ${{ env.ANDROID_SDK_ROOT }}/ndk/26.3.11579264
+          ANDROID_NDK_HOME: ${{ env.ANDROID_SDK_ROOT }}/ndk/28.2.13676358
         run: |
           scripts/build-mobile-tools.sh "$RUNNER_TEMP/opendeezer-mobile-tools"
           export PATH="$RUNNER_TEMP/opendeezer-mobile-tools:$PATH"
@@ -413,8 +413,8 @@ jobs:
         env:
           ANDROID_EXPECTED_CERT_SHA256: ${{ vars.ANDROID_EXPECTED_CERT_SHA256 }}
         run: |
-          APKSIGNER="$ANDROID_SDK_ROOT/build-tools/34.0.0/apksigner"
-          AAPT="$ANDROID_SDK_ROOT/build-tools/34.0.0/aapt"
+          APKSIGNER="$ANDROID_SDK_ROOT/build-tools/36.0.0/apksigner"
+          AAPT="$ANDROID_SDK_ROOT/build-tools/36.0.0/aapt"
           EXPECTED="${ANDROID_EXPECTED_CERT_SHA256:-E5:C1:14:BA:5E:F3:48:2B:5A:44:14:85:92:38:35:C5:10:C7:24:01:3F:41:16:C9:A4:48:08:B3:47:DF:A2:30}"
           WANT=$(echo "$EXPECTED" | tr -d ' :' | tr 'a-f' 'A-F')
           verify_one() {
@@ -487,7 +487,7 @@ jobs:
 
       - name: Upload to release
         if: startsWith(github.ref, 'refs/tags/')
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           files: |
             OpenDeezer-android*.apk
@@ -505,7 +505,7 @@ jobs:
     runs-on: macos-26
     continue-on-error: true
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - name: Select Xcode 26
         uses: maxim-lobanov/setup-xcode@v1
         with:
@@ -540,9 +540,9 @@ jobs:
           # never succeeded.
           [ "$ok" -eq 1 ] || { bounce; xcodebuild -downloadAllPlatforms; }
           echo "== installed iOS SDKs =="; xcodebuild -showsdks 2>/dev/null | grep -i iphoneos || true
-      - uses: actions/setup-go@v6
+      - uses: actions/setup-go@v7
         with:
-          go-version: "1.25.12"
+          go-version: "1.25.13"
       - name: Build Odmobile.xcframework (gomobile bind ios)
         run: |
           scripts/build-mobile-tools.sh "$RUNNER_TEMP/opendeezer-mobile-tools"
@@ -568,7 +568,7 @@ jobs:
           zip -qry ../../OpenDeezer-ios-unsigned.ipa Payload
       - name: Upload to release
         if: startsWith(github.ref, 'refs/tags/')
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           files: OpenDeezer-ios-unsigned.ipa
 
@@ -591,7 +591,7 @@ jobs:
       id-token: write
       attestations: write
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - name: Download release assets
         env:
           GH_TOKEN: ${{ github.token }}
@@ -662,12 +662,12 @@ jobs:
           test -s SHA256SUMS.txt
           cat SHA256SUMS.txt
       - name: Upload checksums
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           files: SHA256SUMS.txt
           body_path: RELEASE_NOTES.md
       - name: Attest build provenance (checksums)
-        uses: actions/attest-build-provenance@v1
+        uses: actions/attest-build-provenance@v4
         with:
           subject-path: 'SHA256SUMS.txt'
 
@@ -682,7 +682,7 @@ jobs:
       contents: write
       pull-requests: write
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           # create-pull-request configures its own token. Keeping checkout's
           # credential too sends duplicate Authorization headers on git fetch.
@@ -729,7 +729,7 @@ jobs:
             "$SOURCE_SHA256" \
             "$RELEASE_DATE"
       - name: Preserve updated manifests
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: package-manifests-${{ github.ref_name }}
           path: |
@@ -745,7 +745,7 @@ jobs:
         # Some repositories disable PR creation by GITHUB_TOKEN. The validated
         # manifests remain available as the artifact above if that setting is off.
         continue-on-error: true
-        uses: peter-evans/create-pull-request@v6
+        uses: peter-evans/create-pull-request@v8
         with:
           token: ${{ github.token }}
           commit-message: "chore(release): update packaging manifests for ${{ github.ref_name }}"
